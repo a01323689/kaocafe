@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>慢啡旅</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background: #f5eee6;
+      margin: 0;
+    }
+    .wrapper {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .search-input {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .confirm-btn {
+      padding: 10px 16px;
+      background: #0091ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .clear-btn {
+      padding: 8px 10px;
+      font-size: 18px;
+      background: #2d8b2a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 150px;
+      height: 42px;
+    }
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .dropdown {
+      position: relative;
+      min-width: 160px;
+    }
+    .dropdown-button {
+      width: 200px;
+      font-size: 18px;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #5C4033;
+      color: white;
+      cursor: pointer;
+      text-align: center;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      z-index: 10;
+      text-align: left;
+      width: 100%;
+    }
+    .dropdown-menu label {
+      display: block;
+      padding: 4px 0;
+    }
+    .dropdown-menu input[type="checkbox"] {
+      margin-right: 6px;
+    }
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .card-content h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .card-content hr {
+      width: 100%;
+      margin: 10px 0;
+      border: none;
+      border-top: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .tags {
+      margin-top: 6px;
+    }
+    .tag {
+      display: inline-block;
+      background: #eee;
+      color: #333;
+      padding: 4px 8px;
+      margin: 2px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+    .map-icon {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 18px;
+      text-decoration: none;
+      color: #007bff;
+    }
+    .map-icon:hover {
+      color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h2>
+      <img src="https://img1.pixhost.to/images/6133/605595350_1.png" alt="描述文字">
+    </h2>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" class="search-input" placeholder="輸入店名關鍵字搜尋..." />
+      <button class="confirm-btn" onclick="filterData()">搜尋</button>
+    </div>
+
+    <div class="filter-bar">
+      <!-- 地區 -->
+      <div class="dropdown" data-type="area">
+        <div class="dropdown-button" onclick="toggleDropdown('area')">搜尋地區</div>
+        <div class="dropdown-menu" id="menu-area">
+          <label><input type="checkbox" value="小港區" /> 小港區</label>
+        <label><input type="checkbox" value="前鎮區" /> 前鎮區</label>
+        <label><input type="checkbox" value="苓雅區" /> 苓雅區</label>
+        <label><input type="checkbox" value="前金區" /> 前金區</label>
+        <label><input type="checkbox" value="新興區" /> 新興區</label>
+        <label><input type="checkbox" value="三民區" /> 三民區</label>
+        <label><input type="checkbox" value="鼓山區" /> 鼓山區</label>
+        <label><input type="checkbox" value="鹽埕區" /> 鹽埕區</label>
+        <label><input type="checkbox" value="鳳山區" /> 鳳山區</label>
+        <label><input type="checkbox" value="左營區" /> 左營區</label>
+        <label><input type="checkbox" value="仁武區" /> 仁武區</label>
+        <label><input type="checkbox" value="楠梓區" /> 楠梓區</label>
+        <label><input type="checkbox" value="橋頭區" /> 橋頭區</label>
+        <label><input type="checkbox" value="岡山區" /> 岡山區</label>
+          <button class="confirm-btn" onclick="confirmSelection('area')">確認</button>
+        </div>
+      </div>
+
+      <!-- 營業時間 -->
+      <div class="dropdown" data-type="style">
+        <div class="dropdown-button" onclick="toggleDropdown('style')">營業時間</div>
+        <div class="dropdown-menu" id="menu-style">
+          <label><input type="checkbox" value="每天" /> 每天</label>
+          <label><input type="checkbox" value="星期一" /> 星期一</label>
+          <label><input type="checkbox" value="星期二" /> 星期二</label>
+          <label><input type="checkbox" value="星期三" /> 星期三</label>
+          <label><input type="checkbox" value="星期四" /> 星期四</label>
+          <label><input type="checkbox" value="星期五" /> 星期五</label>
+          <label><input type="checkbox" value="星期六" /> 星期六</label>
+          <label><input type="checkbox" value="星期日" /> 星期日</label>
+          <button class="confirm-btn" onclick="confirmSelection('style')">確認</button>
+        </div>
+      </div>
+
+      <!-- 服務功能 -->
+      <div class="dropdown" data-type="feature">
+        <div class="dropdown-button" onclick="toggleDropdown('feature')">服務功能</div>
+        <div class="dropdown-menu" id="menu-feature">
+          <label><input type="checkbox" value="插座" /> 插座</label>
+          <label><input type="checkbox" value="Wi-Fi" /> Wi-Fi</label>
+          <label><input type="checkbox" value="不限時" /> 不限時</label>
+          <button class="confirm-btn" onclick="confirmSelection('feature')">確認</button>
+        </div>
+      </div>
+
+      <button class="clear-btn" onclick="clearFilters()">清空全部篩選</button>
+    </div>
+
+    <div id="result-count"></div>
+    <div class="card-container" id="card-container"></div>
+  </div>
+
+  <script>
+    const rawData = [
+      {
+        name: "河映咖啡",
+        area: "三民區",
+        style: ["每天"],
+        feature: ["Wi-Fi", "插座", "不限時"],
+        address: "高雄市三民區建工路318號",
+        mapUrl: "https://reurl.cc/aejdK4",
+        image: "https://i.ibb.co/cctb2v1z/image.png"
+      },
+      {
+        name: "和好珈琲店",
+        area: "三民區",
+        style: ["星期二","星期三","星期四","星期五","星期六","星期日"],
+        feature: ["Wi-Fi", "插座", "不限時"],
+        address: "高雄市三民區延吉街67號",
+        mapUrl: "https://reurl.cc/nmjv8l",
+        image: "https://i.ibb.co/rKSbRXSt/image.jpg"
+      },
+      {
+        name: "馤咖啡",
+        area: "左營區",
+        style: ["星期一","星期二","星期三","星期五","星期六","星期日"],
+        feature: ["Wi-Fi", "插座", "不限時"],
+        address: "高雄市左營區文慈路75號",
+        mapUrl: "https://reurl.cc/lzjy1A",
+        image: "https://i.ibb.co/CT6GGpH/image.jpg"
+      },
+      {
+        name: "耀café",
+        area: "楠梓區",
+        style: ["星期一","星期三","星期四","星期五","星期六","星期日"],
+        feature: ["Wi-Fi", "插座", "不限時"],
+        address: "高雄市楠梓區軍校路516號",
+        mapUrl: "https://reurl.cc/QYkVXZ",
+        image: "https://imageproxy.pixnet.cc/imgproxy?url=https://pic.pimg.tw/sunyat/1509451110-183763571_n.jpg"
+      },
+      {
+        name: "二木咖啡",
+        area: "三民區",
+        style: ["每天"],
+        feature: ["插座", "不限時"],
+        address: "高雄市三民區吉林街149號",
+        mapUrl: "https://reurl.cc/VYvmzy",
+        image: "https://i.ibb.co/vxs9SD48/image.jpg"
+      },
+      {
+        name: "好久不見咖啡",
+        area: "苓雅區",
+        style: ["星期二","星期三","星期四","星期五","星期六","星期日"],
+        feature: ["Wi-Fi","插座", "不限時"],
+        address: "高雄市苓雅區成功一路150號",
+        mapUrl: "https://reurl.cc/W0Z8Mk",
+        image: "https://i.ibb.co/fzCwJjx2/image.jpg"
+      }
+    ];
+
+    const selectedFilters = { area: [], style: [], feature: [] };
+
+    function toggleDropdown(type) {
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu.id !== `menu-${type}`) menu.style.display = 'none';
+      });
+      const menu = document.getElementById(`menu-${type}`);
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function confirmSelection(type) {
+      const checkboxes = document.querySelectorAll(`#menu-${type} input[type="checkbox"]`);
+      selectedFilters[type] = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+      updateButtonLabel(type);
+      document.getElementById(`menu-${type}`).style.display = 'none';
+      filterData();
+    }
+
+    function updateButtonLabel(type) {
+      const btn = document.querySelector(`.dropdown[data-type="${type}"] .dropdown-button`);
+      const selected = selectedFilters[type];
+      btn.textContent = selected.length
+        ? selected.join(", ")
+        : { area: "搜尋地區", style: "營業時間", feature: "服務功能" }[type];
+    }
+
+    function clearFilters() {
+      ["area", "style", "feature"].forEach(type => {
+        selectedFilters[type] = [];
+        const checkboxes = document.querySelectorAll(`#menu-${type} input[type="checkbox"]`);
+        checkboxes.forEach(cb => cb.checked = false);
+        updateButtonLabel(type);
+      });
+      document.getElementById("searchInput").value = "";
+      filterData();
+    }
+
+    function filterData() {
+      const keyword = document.getElementById("searchInput")?.value?.toLowerCase() || "";
+      const filtered = rawData.filter(item => {
+        return (!selectedFilters.area.length || selectedFilters.area.includes(item.area)) &&
+               (!selectedFilters.style.length || selectedFilters.style.some(s => item.style.includes(s))) &&
+               (!selectedFilters.feature.length || selectedFilters.feature.some(f => item.feature.includes(f))) &&
+               item.name.toLowerCase().includes(keyword);
+      });
+      renderCards(filtered);
+    }
+
+    function renderCards(data) {
+      const container = document.getElementById("card-container");
+      const countDiv = document.getElementById("result-count");
+      countDiv.textContent = `共有 ${data.length} 間符合條件的咖啡廳`;
+
+      container.innerHTML = data.map(item => `
+        <div class="card">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="card-content">
+            <h3>${item.name}</h3>
+            <hr />
+            <div><strong>地區：</strong>${item.area}</div>
+            <hr />
+            <div><strong>服務功能：</strong><br />
+              <div class="tags">
+                ${item.feature.map(f => `<span class="tag">${f}</span>`).join('')}
+              </div>
+            </div>
+            <hr />
+            <div><strong>營業時間：</strong><br />
+              <div class="tags">
+                ${item.style.map(s => `<span class="tag">${s}</span>`).join('')}
+              </div>
+            </div>
+            <hr />
+            <div><strong>地址：</strong>${item.address}
+              <a class="map-icon" href="${item.mapUrl}" target="_blank" title="查看地圖">📍</a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderCards(rawData);
+
+    window.onclick = function(e) {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
+      }
+    };
+  </script>
+</body>
+</html>
